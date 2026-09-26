@@ -1,0 +1,23 @@
+Caso real: Fallo en subida de archivos grandes en Google Drive (2019)
+Contexto:  
+En 2019, varias compañías que usaban Google Drive para compartir documentos internos detectaron que al intentar subir archivos de más de 5 GB desde navegadores como Firefox y Edge, la operación fallaba. El problema no ocurría en Chrome, porque este navegador estaba más alineado con las APIs de Google.
+
+Escenario de prueba:
+
+Los testers intentaban subir videos corporativos y respaldos de bases de datos a Drive.
+
+En Chrome, la subida funcionaba correctamente.
+
+En Firefox y Edge, la barra de progreso se detenía y aparecía un error de “Conexión interrumpida”.
+
+Resultado esperado:  
+El archivo debía subirse completo en todos los navegadores compatibles.
+
+Resultado real:  
+Solo Chrome permitía la subida exitosa. En los otros navegadores, el proceso fallaba sistemáticamente.
+
+Acción correctiva:  
+Google reconoció el bug y lanzó una actualización en Drive Web que solucionó la compatibilidad con Firefox y Edge. Mientras tanto, las empresas tuvieron que usar Chrome como navegador oficial para subir archivos grandes.
+
+Conclusión:  
+Este caso real mostró cómo una aplicación en la nube puede comportarse de manera distinta según el navegador, y por qué las pruebas de compatibilidad son críticas en QA.
