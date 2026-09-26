@@ -1,0 +1,35 @@
+# Investigación de Casos Reales
+**Fallos de software vinculados a incompatibilidad entre navegadores**
+
+**Proyecto 3:** Automatización Cross-Browser con Selenium WebDriver - Grupo 10  
+**Integrantes:** Barrientos Lucas - Sandoval Thiago - Pereyra Dario - Zelaya Alexis  
+**Materia:** Técnicas Avanzadas de Programación (2026) — IES Alfredo Coviello  
+
+---
+
+### Caso 1: Zendesk Explore - falla exclusiva en Safari por una API de navegador incompatible
+Zendesk publicó un post-mortem público en su sistema de estado indicando que, durante una ventana de aproximadamente 27 minutos, los clientes que usaban el navegador Safari en determinados servidores ("Pods") no podían cargar los paneles y consultas del módulo Explore, mientras que el resto de los navegadores funcionaba con normalidad.
+
+Según el propio reporte de la empresa, la causa fue un defecto que se filtró en un cambio de código de Explore relacionado con APIs específicas del navegador, y que resultó incompatible con versiones anteriores de Safari. La solución inmediata fue revertir el cambio, y como acción correctiva a largo plazo la empresa se comprometió a sumar pruebas adicionales sobre versiones antiguas de Safari.
+
+**Relevancia para nuestro proyecto:** Este caso es un ejemplo directo de por qué existe el testing cross-browser que estamos automatizando con Selenium WebDriver. El código pasó los controles internos porque probablemente solo se validó en un navegador (o en una versión moderna de Safari), y el problema apareció únicamente en un motor de renderizado distinto (WebKit en versiones antiguas). Automatizar la misma suite de pruebas contra varios navegadores, como hace nuestro `conftest.py`, es exactamente la práctica que habría detectado este tipo de falla antes de llegar a producción.
+
+---
+
+### Caso 2: Files.com - módulo de archivos caído específicamente en Safari
+Files.com publicó un reporte de incidente indicando que, el 6 de septiembre de 2022, los clientes que usaban el navegador Safari empezaron a reportar que la página de archivos no cargaba, mientras que con cualquier otro navegador el sistema funcionaba con normalidad.
+
+El equipo de gestión de incidentes de la empresa confirmó, según su propio reporte, que un defecto de software introducido en un despliegue reciente afectaba únicamente al navegador Safari; revirtieron el cambio para restaurar el servicio y luego corrigieron, probaron extensamente en un entorno de staging y volvieron a desplegar el arreglo definitivo.
+
+**Relevancia para nuestro proyecto:** Al igual que el caso anterior, confirma un patrón repetido en la industria: un cambio de código valida correctamente en un navegador pero rompe en otro con un motor de renderizado distinto, y el problema solo se detecta cuando ya está en producción y afectando usuarios reales. Es el problema exacto que la consigna de nuestro Proyecto 3 describe: *"decidir con qué navegadores probar, reemplazar pausas fijas por esperas explícitas y medir si una aplicación realmente funciona en la práctica, no solo en el navegador que le resulta más cómodo al equipo de desarrollo"*.
+
+---
+
+### Conclusión
+Ambos casos, verificados contra la publicación original de cada empresa, muestran que la falta de cobertura cross-browser no es un riesgo teórico: es una causa real y documentada de caídas de servicio en compañías de tecnología reconocidas. Esto refuerza la justificación de nuestro Proyecto 3: automatizar el mismo flujo de pruebas contra Chrome, Firefox y Edge con Selenium WebDriver reduce directamente el riesgo de que un cambio de código funcione en un navegador y falle en otro sin que nadie lo note hasta que un cliente real lo reporta.
+
+---
+
+### Fuentes (formato APA)
+* Zendesk. (s.f.). *Explore intermittently unavailable for some customers using Safari* [Reporte de incidente]. Zendesk System Status. https://support.zendesk.com/hc/en-us/articles/4402857549466
+* Files.com. (2022, 6 de septiembre). *Files page not loading correctly in Safari browser* [Reporte de incidente post-mortem]. Files.com Status. https://stspg.io/5vht7nrsn0bj
