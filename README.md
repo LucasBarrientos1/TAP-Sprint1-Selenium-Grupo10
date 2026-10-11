@@ -19,7 +19,7 @@ para el detalle completo (qué es, por qué se eligió, cómo se verificó la au
 ## 3. Estructura del repositorio
 
 ```
-TAP_Sprint1_Selenium_Grupo10/
+proyecto3-selenium/
 ├── README.md
 ├── .gitignore
 ├── requirements.txt
@@ -78,10 +78,42 @@ pytest --html=report.html --self-contained-html
 
 ## 7. Qué prueba cada test
 
-| Archivo | Qué verifica | Por qué importa |
-|---|---|---|
-| `test_login.py::test_registro_y_login_exitoso` | Registra un usuario nuevo (con datos generados en cada corrida), confirma que ParaBank loguea automáticamente tras el registro, cierra sesión, y vuelve a loguear manualmente con ese mismo usuario. | Camino feliz de punta a punta: alta de cliente + autenticación real, sin depender de una cuenta fija que otra persona pudo haber modificado (ParaBank es un sitio público compartido). |
-| `test_login.py::test_login_credenciales_invalidas` | Con un usuario inexistente y contraseña incorrecta, la app no redirige a `/overview.htm` y muestra el mensaje de error. | Caso negativo: la app no debe dejar pasar credenciales inválidas ni fallar silenciosamente. |
+| Archivo | Caso | Qué verifica | Estado |
+|---|---|---|---|
+| `test_login.py::test_registro_y_login_exitoso` | TC04 + TC01 | Registro de usuario nuevo y login posterior exitoso. | ✅ Ejecutado, PASSED |
+| `test_login.py::test_login_credenciales_invalidas` | TC02 | Usuario inexistente no puede loguearse. | ✅ Ejecutado, PASSED |
+| `test_login.py::test_login_password_vacio` | TC03 | Password vacío no permite loguear aunque el usuario exista. | ✅ Ejecutado (Sprint 2) |
+| `test_login.py::test_registro_campos_vacios` | TC05 | Formulario de registro vacío no crea cuenta y muestra "required". | ✅ Ejecutado (Sprint 2) |
+| `test_login.py::test_registro_usuario_duplicado` | TC06 | No se puede registrar dos veces el mismo username. | ✅ Ejecutado (Sprint 2) |
+| `test_transfer_y_cuentas.py::test_transferencia_exitosa` | TC07 | Transferencia válida entre cuentas propias. | ⏸️ Diseñado, `skip` hasta verificar selectores |
+| `test_transfer_y_cuentas.py::test_transferencia_monto_cero` | TC08 | Transferencia con monto 0. | ⏸️ Diseñado, `skip` |
+| `test_transfer_y_cuentas.py::test_transferencia_supera_saldo` | TC09 | Transferencia mayor al saldo disponible. | ⏸️ Diseñado, `skip` |
+| `test_transfer_y_cuentas.py::test_apertura_cuenta_nueva` | TC10 | Apertura de una cuenta nueva. | ⏸️ Diseñado, `skip` |
+
+El detalle completo de cada caso (precondiciones, pasos, resultado esperado, criterio de
+aceptación y técnica de diseño aplicada) está en `Documento_Sprint2.docx`.
+
+## 8. Cómo activar los tests pendientes (TC07–TC10)
+
+Los tests de `test_transfer_y_cuentas.py` están deliberadamente desactivados con
+`@pytest.mark.skip` porque sus localizadores (ids de los campos de `transfer.htm` y
+`openaccount.htm`) todavía no fueron verificados contra el sistema real con el navegador
+abierto. Antes de activarlos:
+
+1. Loguearse manualmente en ParaBank y abrir las herramientas de desarrollador (F12) en esas
+   dos páginas.
+2. Confirmar que los `id` usados en el código (`amount`, `fromAccountId`, `toAccountId`, `type`,
+   `openAccountButton`) coinciden con el HTML real.
+3. Ajustar lo que haga falta y sacar el decorador `@pytest.mark.skip` de cada función.
+
+## 9. Generar el reporte de ejecución (para la carpeta de Evidencias)
+
+```bash
+pytest --html=Ejecucion_Pruebas.html --self-contained-html -v
+```
+
+Este archivo (o su versión `.log` con `pytest -v > Ejecucion_Pruebas.log`) es el que va dentro
+de `Automatizacion/Ejecucion_Pruebas.log` en el zip de entrega del Sprint 2.
 
 ## 8. Errores comunes durante la instalación (y cómo se resolvieron)
 
