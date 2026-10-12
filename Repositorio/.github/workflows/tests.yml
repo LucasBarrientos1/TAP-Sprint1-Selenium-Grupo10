@@ -1,0 +1,47 @@
+name: Tests Selenium (CI)
+
+# Cuando corre solo:
+#  - en cada push y cada pull request
+#  - todos los dias a las 12:00 UTC (09:00 de Argentina)
+#  - a mano desde la pestana Actions (workflow_dispatch)
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+  schedule:
+    - cron: "0 12 * * *"
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false          # si falla un navegador, el otro igual termina
+      matrix:
+        browser: [chrome, firefox]
+    steps:
+      - name: Bajar el codigo
+        uses: actions/checkout@v4
+
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Ejecutar la suite (${{ matrix.browser }}, sin ventana, en paralelo)
+        run: |
+          mkdir -p reportes
+          pytest --browser=${{ matrix.browser }} --headless -n 2 --durations=5 \
+            --html=reportes/reporte-${{ matrix.browser }}.html --self-contained-html \
+            --junitxml=reportes/resultados-${{ matrix.browser }}.xml
+
+      - name: Guardar reportes y capturas
+        if: always()               # se guardan aunque haya tests fallando
+        uses: actions/upload-artifact@v4
+        with:
+          name: reportes-${{ matrix.browser }}
+          path: reportes/
