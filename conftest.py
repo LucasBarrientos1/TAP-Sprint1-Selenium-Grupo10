@@ -1,22 +1,3 @@
-"""
-conftest.py
-Este es el corazon de la automatizacion cross-browser: un unico fixture de pytest
-que arma el WebDriver correcto (Chrome, Firefox o Edge) segun el parametro
---browser que se pase por linea de comandos. Los tests no saben ni les importa
-en que navegador estan corriendo: solo reciben un "driver" ya listo para usar.
-
-Esto es exactamente el problema que resuelve Selenium WebDriver: escribir el
-test una sola vez y ejecutarlo contra motores de renderizado distintos
-(Blink en Chrome/Edge, Gecko en Firefox) sin duplicar codigo.
-
-Nota tecnica: el driver de cada navegador (chromedriver, geckodriver,
-msedgedriver) lo resuelve automaticamente "Selenium Manager", una herramienta
-que Selenium trae integrada desde la version 4.6 en adelante. Por eso NO
-usamos la libreria externa webdriver-manager: esa libreria depende de un
-endpoint de Microsoft (msedgedriver.azureedge.net) que fue dado de baja, lo
-que hacia fallar la descarga del driver de Edge con un error de conexion
-enganoso ("Are you offline?"). Selenium Manager no tiene ese problema.
-"""
 import os
 import random
 from datetime import datetime
@@ -89,17 +70,7 @@ def base_url():
 
 @pytest.fixture
 def usuario_registrado(driver, base_url):
-    """
-    Registra un usuario nuevo con datos unicos y lo deja YA logueado en
-    /overview.htm. Lo usan los tests que necesitan partir de una sesion
-    autenticada (por ejemplo, el caso de username duplicado en TC06, que
-    necesita que un usuario ya exista antes de intentar repetirlo).
 
-    Devuelve un diccionario con el username y password usados, por si el
-    test necesita loguearse de nuevo mas adelante.
-    """
-    # Con ejecucion en paralelo (pytest-xdist) dos tests pueden arrancar en el
-    # mismo milisegundo, asi que a la hora le sumamos digitos al azar.
     marca = f"{int(time.time() * 1000)}{random.randint(100, 999)}"
     username = f"grupo10qa{marca}"
     password = "Passw0rd!2026"
@@ -153,10 +124,7 @@ def usuario_registrado(driver, base_url):
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
-    """
-    Si un test falla, guarda una captura del navegador en reportes/capturas/.
-    En el CI esa carpeta se sube como evidencia, sin que nadie la arme a mano.
-    """
+
     outcome = yield
     reporte = outcome.get_result()
     if reporte.when in ("setup", "call") and reporte.failed:
