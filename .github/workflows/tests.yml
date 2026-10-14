@@ -1,4 +1,4 @@
-name: Tests Selenium (CI) - Updated
+name: Tests Selenium (CI)
 
 # Cuando corre solo:
 #  - en cada push y cada pull request
