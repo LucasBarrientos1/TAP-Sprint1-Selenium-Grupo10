@@ -1,13 +1,13 @@
 # Proyecto 3 — Automatización Cross-Browser con Selenium WebDriver
 **Grupo 10** — Alexis Zelaya, Dario Exequiel Pereyra, Thiago Agustín Sandoval
-Técnicas Avanzadas de Programación (TAP) — Sprint 1
+Técnicas Avanzadas de Programación (TAP) — Sprint 3
 
 ## 1. Qué es esto
 
-Este repositorio contiene el primer artefacto funcional del proyecto de especialización en
-Selenium WebDriver. El objetivo del Sprint 1 es demostrar automatización cross-browser: el
-mismo flujo de prueba corriendo sobre distintos navegadores (Chrome, Firefox y Edge) sin
-duplicar código.
+Este repositorio contiene el artefacto funcional del proyecto de especialización en
+Selenium WebDriver. El objetivo del Sprint 3 es demostrar automatización cross-browser con
+CI/CD: el mismo flujo de prueba corriendo sobre distintos navegadores (Chrome y Firefox)
+en GitHub Actions, sin duplicar código.
 
 ## 2. Sistema bajo prueba
 
