@@ -135,3 +135,44 @@ Completar por cada integrante según lo que le haya pasado en su máquina. Ejemp
 - Sumar un caso de prueba con datos parametrizados (varios usuarios/contraseñas con `pytest.mark.parametrize`).
 - Integrar el reporte HTML como evidencia estándar de cada corrida.
 - Evaluar Page Object Model para separar localizadores de lógica de test a medida que crezca la suite.
+
+## 10. Sprint 3: ejecución automática (CI/CD)
+
+La suite corre sola en GitHub Actions (`.github/workflows/tests.yml`):
+
+| Cuándo | Qué hace |
+|---|---|
+| En cada `push` y cada pull request | Corre la suite en Chrome y en Firefox, sin ventana, en paralelo |
+| Todos los días 12:00 UTC (09:00 de Argentina) | Corrida programada, para detectar cambios del sitio |
+| A mano (pestaña Actions, "Run workflow") | Para volver a correr sin hacer un commit |
+
+Cada ejecución guarda como artefactos, sin intervención manual: reporte HTML, resultados en XML
+(JUnit) y capturas de pantalla de los tests que fallan. Se descargan desde la pestaña **Actions**,
+dentro de la ejecución, sección *Artifacts*.
+
+### Ejecución local equivalente
+
+```bash
+pip install -r requirements.txt
+pytest --browser=chrome --headless -n 2          # sin ventana y en paralelo
+pytest -m smoke                                  # solo los tests rápidos del flujo crítico
+pytest --html=reportes/reporte.html --self-contained-html --junitxml=reportes/resultados.xml
+```
+
+### Medición antes/después de la optimización
+
+```bash
+# ANTES: un test por vez, con ventana
+pytest -q
+# DESPUÉS: sin ventana y en paralelo
+pytest -q --headless -n 2
+pytest -q --headless -n 4
+```
+
+Anotar el tiempo total que muestra pytest al final de cada comando (por ejemplo `in 69.29s`).
+Línea base registrada del Sprint 2: 69,29 s para la suite completa, ejecutada en serie y con ventana.
+
+### Datos de prueba y paralelismo
+
+Todos los datos que se registran (usuario, SSN, teléfono) se generan con la hora en milisegundos
+más dígitos al azar, para que dos tests en paralelo nunca usen el mismo dato.
